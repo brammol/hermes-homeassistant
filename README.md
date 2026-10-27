@@ -8,6 +8,7 @@ A Home Assistant custom integration that connects your voice PE to [Hermes Agent
 - **`continue_conversation` support** — mic stays open when Hermes asks a follow-up question
 - Emoji stripping and TTS character limits for clean voice output
 - Simple Bearer token auth
+- **Speaker identity** — the Home Assistant user name is sent as an `X-HA-User` header
 
 ## Requirements
 
@@ -43,6 +44,12 @@ Copy `custom_components/hermes/` into your HA config's `custom_components/` fold
 1. Go to **Settings** → **Devices & Services** → **Add Integration**
 2. Search for **Hermes**
 3. Enter your Pi's IP, port (`8642`), and API key
+
+## Speaker identity
+
+When a request comes from a logged-in Home Assistant user (for example the Companion app or the Assist chat), the integration looks up that user's name and sends it to the Hermes API as a percent-encoded `X-HA-User` header. Requests without a user (such as a satellite without a linked account) omit the header.
+
+A proxy or the agent can use it to tell household members apart, for instance to choose a persona or to key conversations per person. Decode with `urllib.parse.unquote`.
 
 ## Voice PE Setup
 
