@@ -105,10 +105,17 @@ class HermesConversationEntity(conversation.ConversationEntity):
         """Handle a voice/text message from HA."""
         _LOGGER.debug("Hermes handling: %s", user_input.text)
 
+        user_name = None
+        user_id = user_input.context.user_id if user_input.context else None
+        if user_id:
+            user = await self.hass.auth.async_get_user(user_id)
+            user_name = user.name if user else None
+
         try:
             response_text = await self._client.chat(
                 message=user_input.text,
                 conversation_id=user_input.conversation_id,
+                user_name=user_name,
             )
         except HermesAuthenticationError:
             response_text = "Authentication failed. Please check your Hermes API key in the integration settings."

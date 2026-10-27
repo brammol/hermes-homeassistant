@@ -4,6 +4,7 @@ from __future__ import annotations
 import asyncio
 import logging
 from typing import Any
+from urllib.parse import quote
 
 import aiohttp
 from homeassistant.core import HomeAssistant
@@ -63,6 +64,7 @@ class HermesApiClient:
         self,
         message: str,
         conversation_id: str | None = None,
+        user_name: str | None = None,
     ) -> str:
         """Send a message and return the assistant's response text."""
         messages = [
@@ -91,11 +93,16 @@ class HermesApiClient:
         if conversation_id:
             payload["conversation"] = conversation_id
 
+        headers = dict(self._headers)
+        if user_name:
+            # HTTP headers must be latin-1 safe; percent-encode the name.
+            headers["X-HA-User"] = quote(user_name)
+
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.post(
                     f"{self._base_url}/v1/chat/completions",
-                    headers=self._headers,
+                    headers=headers,
                     json=payload,
                     timeout=aiohttp.ClientTimeout(total=self._timeout),
                 ) as resp:
