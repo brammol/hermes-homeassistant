@@ -2,6 +2,8 @@
 
 A Home Assistant custom integration that connects your voice PE to [Hermes Agent](https://github.com/ddrayne/hermes-agent) via its OpenAI-compatible API server.
 
+> **Fork note:** this fork of [wunnle/hermes-homeassistant](https://github.com/wunnle/hermes-homeassistant) adds the `X-HA-User` header (see [Speaker identity](#speaker-identity)). To use it, add `brammol/hermes-homeassistant` as a custom repository in HACS (category Integration) instead of the upstream one.
+
 ## Features
 
 - Full Hermes agent behind your voice: Spotify, calendar, Linear, camera, smart home, and more
